@@ -8,6 +8,8 @@ import LeftSideBar from "@/components/shared/LeftSideBar";
 import RightSideBar from "@/components/shared/RightSideBar";
 import BottomBar from "@/components/shared/BottomBar";
 
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -34,6 +36,7 @@ export default function RootLayout({
           </main>
 
           <BottomBar />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>

@@ -16,6 +16,7 @@ import { Textarea } from "../ui/textarea";
 import { usePathname, useRouter } from "next/navigation";
 import { TrendValidation } from "@/lib/validations/trends";
 import { createTrend } from "@/lib/actions/trend.actions";
+import { useOrganization } from "@clerk/nextjs";
 interface Props {
   user: {
     username: string;
@@ -29,6 +30,7 @@ interface Props {
 }
 
 const PostTrend = ({ userId }: { userId: string }) => {
+  const { organization } = useOrganization();
   const pathname = usePathname();
   const router = useRouter();
   const form = useForm({
@@ -42,7 +44,7 @@ const PostTrend = ({ userId }: { userId: string }) => {
     await createTrend({
       text: values.trend,
       author: userId,
-      communityId: null,
+      communityId: organization ? organization.id : null,
       path: pathname,
     });
     router.push("/");

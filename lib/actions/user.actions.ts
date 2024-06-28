@@ -5,6 +5,7 @@ import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import Trend from "../models/trend.model";
 import { FilterQuery, SortOrder } from "mongoose";
+import Community from "../models/community.model";
 
 export async function updateUser({
   userId,
@@ -21,10 +22,9 @@ export async function updateUser({
   image: string;
   path: string;
 }): Promise<void> {
-  await connectToDB();
-
   try {
-    const res = await User.findOneAndUpdate(
+    await connectToDB();
+    await User.findOneAndUpdate(
       { id: userId },
       { username: username.toLowerCase(), name, bio, image, onboarded: true },
       { new: true, upsert: true, setDefaultsOnInsert: true }
@@ -43,7 +43,7 @@ export async function fetchUser(userId: string) {
     await connectToDB();
     return await User.findOne({ id: userId });
   } catch (error: any) {
-    console.log(error.message);
+    console.log(error);
     throw new Error("Error fetching user");
   }
 }
@@ -54,15 +54,22 @@ export async function fetchUserPosts(userId: string) {
     const trends = await User.findOne({ id: userId }).populate({
       path: "trends",
       model: Trend,
-      populate: {
-        path: "children",
-        model: Trend,
-        populate: {
-          path: "author",
-          model: User,
-          select: "id name image",
+      populate: [
+        {
+          path: "community",
+          model: Community,
+          select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
         },
-      },
+        {
+          path: "children",
+          model: Trend,
+          populate: {
+            path: "author",
+            model: User,
+            select: "id name image",
+          },
+        },
+      ],
     });
 
     return trends;
