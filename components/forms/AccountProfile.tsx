@@ -32,7 +32,7 @@ interface Props {
     id: string;
     objectId: string;
   };
-  btnTitle: string;
+  btnTitle?: string;
 }
 const AccountProfile = ({ user, btnTitle }: Props) => {
   const [files, setfiles] = useState<File[]>([]);

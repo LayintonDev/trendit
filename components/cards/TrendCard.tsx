@@ -114,7 +114,7 @@ const TrendCard = ({
           className="mt-5 flex items-center"
           href={`/communities/${community.id}`}
         >
-          <p>
+          <p className="text-gray-1 text-subtle-medium">
             {formatDateString(createdAt)} - {community.name} Community
           </p>
           <Image

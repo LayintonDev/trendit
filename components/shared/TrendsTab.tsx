@@ -1,6 +1,7 @@
 import { fetchUserPosts } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import TrendCard from "../cards/TrendCard";
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 
 interface Props {
   currentUserId: string;
@@ -8,7 +9,13 @@ interface Props {
   accountType: string;
 }
 const TrendsTab = async ({ currentUserId, accountId, accountType }: Props) => {
-  let res = await fetchUserPosts(accountId);
+  let res: any;
+
+  if (accountType === "Community") {
+    res = await fetchCommunityPosts(accountId);
+  } else {
+    res = await fetchUserPosts(accountId);
+  }
   if (!res) redirect("/");
   return (
     <section className="mt-9 flex flex-col gap-10">

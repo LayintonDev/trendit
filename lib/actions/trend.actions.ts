@@ -14,23 +14,30 @@ interface Params {
 export async function createTrend({ text, author, communityId, path }: Params) {
   try {
     await connectToDB();
+
     const communityIdObject = await Community.findOne(
       { id: communityId },
-      { _id: 1 }
+      {
+        _id: 1,
+      }
     );
+
     const trend = await Trend.create({
       text,
       author,
-      community: communityIdObject,
+      community: communityIdObject._id,
     });
 
     await User.findByIdAndUpdate(author, { $push: { trends: trend._id } });
 
     if (communityIdObject) {
       // Update Community model
-      await Community.findByIdAndUpdate(communityIdObject, {
-        $push: { Trends: trend._id },
-      });
+      await Community.findByIdAndUpdate(
+        { _id: communityIdObject._id },
+        {
+          $push: { trends: trend._id },
+        }
+      );
     }
 
     revalidatePath(path);
